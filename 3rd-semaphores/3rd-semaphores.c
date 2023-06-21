@@ -32,16 +32,17 @@ void * threadA_function(void *arg)
     int counter = 0;
 
 	printf("Running %s ... \n", (char *)arg);
+	sem_wait(semHandleThreadA);
 
     while(++counter < 10)
     {
-		sem_post(semHandleThreadB);
         printf("%s: %i\n", (char *)arg, counter);
-        sem_wait(semHandleThreadA);
-		//sched_yield();
+		sem_post(semHandleThreadB);
+		sem_wait(semHandleThreadA);
     }
 
 	/* Ends routine with an argument */
+	sem_post(semHandleThreadB);
 	pthread_exit(arg);
 }
 
@@ -53,12 +54,14 @@ void * threadB_function(void *arg)
     int counter = 0;
 
 	printf("Running %s ... \n", (char *)arg);
+	sem_post(semHandleThreadA);
+	sem_wait(semHandleThreadB);
 
     while(++counter < 10)
     {
-		sem_post(semHandleThreadA);
         printf("%s: %i\n", (char *)arg, counter);
-        sem_wait(semHandleThreadB);
+		sem_post(semHandleThreadA);
+		sem_wait(semHandleThreadB);
 		//sched_yield();
     }
 
@@ -87,10 +90,10 @@ int main (int argc, char *argv[])
 	semHandleThreadB = sem_open("SemThreadB", 
 								 O_RDWR | O_CREAT, 
 								 S_IRWXU | S_IRWXG | S_IRWXO, 
-								 -1);
+								 0);
 
 	if((semHandleThreadA!= 0) || (semHandleThreadB!=0) )
-		printf ("Semaphores Created!");
+		printf ("\nSemaphores Created!\n");
 	else
 		printf ("Semaphores Error!");
 		
@@ -107,8 +110,6 @@ int main (int argc, char *argv[])
 		printf ("Thread A create error\n");
 		exit(EXIT_FAILURE);
 	}
-	else
-		printf ("\nThread A created!\n");
 
 	/* Create Thread B */
 	status = pthread_create ( &threadB_id,
@@ -122,8 +123,6 @@ int main (int argc, char *argv[])
 		printf ("Thread B create error\n");
 		exit(EXIT_FAILURE);
 	}
-	else
-		printf ("Thread B created!\n");
 
 	/* Wait for Thread to end, and save its return */
 	status = pthread_join (threadA_id, &threadA_exit);
