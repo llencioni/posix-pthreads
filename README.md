@@ -7,20 +7,24 @@ To run:
 $ ./<file-name.exe>
 
 #include <unistd.h>
+========================
 pid_t
 pid_t  getpid()  // returns the process ID
 pid_t  getppid() // returns the parent process ID
 
 #include <sys/sysinfo.h>
+===============================
 int  get_nprocs_conf(void); // gets the number of processors configured in the OS
 int  get_nprocs(void);	// gets the number of processors available 
 
 #include <pthread.h>
+==========================
 PTHREAD_SCOPE_PROCESS, PTHREAD_SCOPE_SYSTEM
 SCHED FIFO, SCHED OTHER, SCHED RR // scheduling policy pthread_attr_t
 int pthread_attr_getscope () // gets thread scope (PTHREAD_SCOPE_SYSTEM, PTHREAD_SCOPE_PROCESS)
 
 #include <sched.h>
+========================
 struct sched_param { 
    ...
    int  sched_priority;   
@@ -44,8 +48,7 @@ CPU_CLR() // Remove CPU cpu from set.
 CPU_ISSET() // Test to see if CPU cpu is a member of set.
 CPU_COUNT() // Return the number of CPUs in set
 
-=====================
- REFERENCES
+REFERENCES
 =====================
 https://opensource.com/article/19/2/fair-scheduling-linux
 https://embarcados.com.br/threads-posix/
