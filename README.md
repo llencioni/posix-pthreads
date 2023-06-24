@@ -6,29 +6,21 @@ $ gcc <file-name.c> -o <file-name.exe> -lpthread
 To run:
 $ ./<file-name.exe>
 
-=========================
 #include <unistd.h>
-=========================
 pid_t
 pid_t  getpid()  // returns the process ID
 pid_t  getppid() // returns the parent process ID
 
-===============================
 #include <sys/sysinfo.h>
-===============================
 int  get_nprocs_conf(void); // gets the number of processors configured in the OS
 int  get_nprocs(void);	// gets the number of processors available 
 
-===========================
 #include <pthread.h>
-===========================
 PTHREAD_SCOPE_PROCESS, PTHREAD_SCOPE_SYSTEM
 SCHED FIFO, SCHED OTHER, SCHED RR // scheduling policy pthread_attr_t
 int pthread_attr_getscope () // gets thread scope (PTHREAD_SCOPE_SYSTEM, PTHREAD_SCOPE_PROCESS)
 
-=========================
 #include <sched.h>
-=========================
 struct sched_param { 
    ...
    int  sched_priority;   
