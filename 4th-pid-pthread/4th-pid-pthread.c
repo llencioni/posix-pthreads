@@ -1,23 +1,13 @@
 #define _GNU_SOURCE
 
 #include <pthread.h>
-// PTHREAD_SCOPE_PROCESS
-// PTHREAD_SCOPE_SYSTEM
-// SCHED FIFO, SCHED OTHER, SCHED RR
-// sched_getscheduler()
-// pthread_attr_getscope ()
-// pthread_attr_t
 #include <sys/types.h> 		// pid_t
 #include <unistd.h> 		// getpid()
 #include <sys/sysinfo.h> 	// get_nprocs_conf(), get_nprocs()
 #include <stdio.h>
-
-
+#include <sched.h>
 //#include <stdlib.h>
-
-//#include <sched.h>
 //#include <time.h>
-
 
 #define NUM_THREADS (4)
 #define NUM_CPUS (4)
@@ -29,9 +19,10 @@
 #define ERROR (-1)
 #define OK (0)
 
+/* Set the desired scheduler type */
 //#define MY_SCHEDULER SCHED_FIFO
-//#define MY_SCHEDULER SCHED_RR
-#define MY_SCHEDULER SCHED_OTHER
+#define MY_SCHEDULER SCHED_RR
+//#define MY_SCHEDULER SCHED_OTHER
 
 int numberOfProcessors=NUM_CPUS;
 
@@ -48,31 +39,54 @@ volatile unsigned int fib = 0, fib0 = 0, fib1 = 1;
 //pthread_attr_t rt_sched_attr[NUM_THREADS];
 int rt_max_prio, rt_min_prio;
 //struct sched_param rt_param[NUM_THREADS];
-//struct sched_param main_param;
+struct sched_param main_param;
 pthread_attr_t main_attr;
 pid_t mainpid;
 
 
 void print_scheduler(void)
 {
-   int schedType, scope;
+   int schedType;
+   int scope;
+   int ret;
+
+   printf("\nPthread scheduler parameters ...\n");
+
+   /************************/
+   /* Get scheduler policy */
+   /************************/
 
    schedType = sched_getscheduler(getpid());
 
    switch(schedType)
    {
-     case SCHED_FIFO:
-           printf("Pthread Policy is SCHED_FIFO\n");
-           break;
+   	 case SCHED_FIFO:
+    	 printf("Pthread Policy is SCHED_FIFO\n");
+    	 break;
      case SCHED_OTHER:
-           printf("Pthread Policy is SCHED_OTHER\n");
-       break;
+    	 printf("Pthread Policy is SCHED_OTHER\n");
+    	 break;
      case SCHED_RR:
-           printf("Pthread Policy is SCHED_RR\n");
-           break;
+    	 printf("Pthread Policy is SCHED_RR\n");
+    	 break;
      default:
-       printf("Pthread Policy is UNKNOWN\n");
+    	 printf("Pthread Policy is UNKNOWN\n");
+    	 break;
    }
+
+   /**********************************************************/
+   /* Get priority min/max value according to scheduler type */
+   /**********************************************************/
+
+   rt_max_prio = sched_get_priority_max(schedType);
+   rt_min_prio = sched_get_priority_min(schedType);
+
+   printf("rt_max_prio = %d\n", rt_max_prio);
+   printf("rt_min_prio = %d\n", rt_min_prio);
+
+   /***************************/
+   /* Get process scope value */
+   /***************************/
 
    pthread_attr_getscope(&main_attr, &scope);
 
@@ -83,8 +97,17 @@ void print_scheduler(void)
    else
      printf("PTHREAD SCOPE UNKNOWN\n");
 
-}
+   /************************/
+   /* get process priority */
+   /************************/
 
+   ret = sched_getparam(mainpid, &main_param);
+   if(ret == 0)
+	   printf("Process priority = %d\n", main_param.sched_priority);
+   else
+	   perror("***** ERROR: getting sched_getparam!");
+
+}
 
 
 int main (int argc, char *argv[])
@@ -94,43 +117,31 @@ int main (int argc, char *argv[])
 //   cpu_set_t threadcpu;
    int coreid;
 
-   /*
-   * 	Get number of processors configured by the operating system:
-   *
-   *	get_nprocs_conf() : returns the number of processors configured by the operating system
-   *
-   *	get_nprocs() : returns the number of processors currently available in the system.
-   *					This may be less than the number returned by get_nprocs_conf() because
-   *					processors may be offline (e.g., on hotpluggable systems).
-   */
-   printf("This system has %d processors with %d available\n", get_nprocs_conf(), get_nprocs());
+   printf("\nThis system has %d processors with %d available\n", get_nprocs_conf(), get_nprocs());
    printf("The test thread created will be run on a specific core based on thread index\n");
 
+   /* get main process PID */
    mainpid=getpid();
-
    printf("Main PID = %d\n", mainpid);
 
-//   rt_max_prio = sched_get_priority_max(SCHED_FIFO);
-//   rt_min_prio = sched_get_priority_min(SCHED_FIFO);
-
+   /* print scheduler parameters */
    print_scheduler();
 
-   /*
-   rc=sched_getparam(mainpid, &main_param);
-   main_param.sched_priority=rt_max_prio;
+   /* set process priority to max */
+   main_param.sched_priority = 10;//rt_max_prio;
 
    if(MY_SCHEDULER != SCHED_OTHER)
    {
-       if(rc=sched_setscheduler(getpid(), MY_SCHEDULER, &main_param) < 0)
-	       perror("******** WARNING: sched_setscheduler");
+	   rc = sched_setscheduler(mainpid,
+			   	   	   	   	   MY_SCHEDULER,
+							   &main_param);
+	   if(rc != 0)
+		   perror("******** WARNING: sched_setscheduler");
    }
 
    print_scheduler();
 
-
-   printf("rt_max_prio=%d\n", rt_max_prio);
-   printf("rt_min_prio=%d\n", rt_min_prio);
-
+   /*
 
    for(i=0; i < NUM_THREADS; i++)
    {
