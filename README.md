@@ -15,7 +15,7 @@ $ ./<file-name.exe>
 #include <sys/sysinfo.h>
 ===============================
 - int get_nprocs_conf(void); // gets the number of processors configured in the OS
-- int get_nprocs(void);	// gets the number of processors available 
+- int get_nprocs(void);	     // gets the number of processors available 
 
 #include <pthread.h>
 ==========================
@@ -27,7 +27,7 @@ $ ./<file-name.exe>
 ========================
 - struct sched_param { 
    ...
-   int  sched_priority;   
+   int  sched_priority;
    ...
 }
 - int sched_get_priority_max(int policy)  // returns the lowest absolute priority (0 for SCHED_OTHERS and 1 for all others)
