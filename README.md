@@ -8,34 +8,34 @@ $ ./<file-name.exe>
 
 #include <unistd.h>
 ========================
-pid_t
-pid_t  getpid()  // returns the process ID
-pid_t  getppid() // returns the parent process ID
+- pid_t
+- pid_t  getpid()  // returns the process ID
+- pid_t  getppid() // returns the parent process ID
 
 #include <sys/sysinfo.h>
 ===============================
-int  get_nprocs_conf(void); // gets the number of processors configured in the OS
-int  get_nprocs(void);	// gets the number of processors available 
+- int get_nprocs_conf(void); // gets the number of processors configured in the OS
+- int get_nprocs(void);	// gets the number of processors available 
 
 #include <pthread.h>
 ==========================
-PTHREAD_SCOPE_PROCESS, PTHREAD_SCOPE_SYSTEM
-SCHED FIFO, SCHED OTHER, SCHED RR // scheduling policy pthread_attr_t
-int pthread_attr_getscope () // gets thread scope (PTHREAD_SCOPE_SYSTEM, PTHREAD_SCOPE_PROCESS)
+- PTHREAD_SCOPE_PROCESS, PTHREAD_SCOPE_SYSTEM
+- SCHED FIFO, SCHED OTHER, SCHED RR // scheduling policy thread_attr_t
+- int pthread_attr_getscope () // gets thread scope (PTHREAD_SCOPE_SYSTEM, PTHREAD_SCOPE_PROCESS)
 
 #include <sched.h>
 ========================
-struct sched_param { 
+- struct sched_param { 
    ...
    int  sched_priority;   
    ...
 }
-int sched_get_priority_max(int policy)  // returns the lowest absolute priority (0 for SCHED_OTHERS and 1 for all others)
-int sched_get_priority_min(int policy)   // returns the highwest absolute priority (0 for SCHED_OTHERS and 99 for all others)
-int sched_setparam(pid_t pid, const struct sched_param *param);  // set process scheduler parameter (priority) 
-int sched_getparam(pid_t pid, struct sched_param *param);            // get process scheduler parameter (priority)
-int sched_setscheduler(pid_t pid, int policy, const struct sched_param *param);   // set scheduling policy and parameters
-int sched_getscheduler()	// gets scheduling type (SCHED_FIFO, SCHED_RR, SCHED_OTHER)
+- int sched_get_priority_max(int policy)  // returns the lowest absolute priority (0 for SCHED_OTHERS and 1 for all others)
+- int sched_get_priority_min(int policy)   // returns the highwest absolute priority (0 for SCHED_OTHERS and 99 for all others)
+- int sched_setparam(pid_t pid, const struct sched_param *param);  // set process scheduler parameter (priority) 
+- int sched_getparam(pid_t pid, struct sched_param *param);            // get process scheduler parameter (priority)
+- int sched_setscheduler(pid_t pid, int policy, const struct sched_param *param);   // set scheduling policy and parameters
+- int sched_getscheduler()	// gets scheduling type (SCHED_FIFO, SCHED_RR, SCHED_OTHER)
 
 CPUs sets
 =========
