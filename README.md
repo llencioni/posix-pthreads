@@ -42,16 +42,20 @@ CPUs sets
 - "cpu_set_t" data structure represents a set of CPUs.
 - CPU sets are used by sched_setaffinity(2) and similar interfaces.
 - "cpu_set_t" data type is implemented as a bitset. However, the data structure treated as considered opaque: all manipulation of CPU sets should be done via the following macros:
-CPU_ZERO() // Clears set, so that it contains no CPUs.
-CPU_SET() // Add CPU cpu to set.
-CPU_CLR() // Remove CPU cpu from set.
-CPU_ISSET() // Test to see if CPU cpu is a member of set.
-CPU_COUNT() // Return the number of CPUs in set
+- CPU_ZERO() // Clears set, so that it contains no CPUs.
+- CPU_SET() // Add CPU cpu to set.
+- CPU_CLR() // Remove CPU cpu from set.
+- CPU_ISSET() // Test to see if CPU cpu is a member of set.
+- CPU_COUNT() // Return the number of CPUs in set
 
 REFERENCES
 =====================
 https://opensource.com/article/19/2/fair-scheduling-linux
+
 https://embarcados.com.br/threads-posix/
+
 https://en.wikipedia.org/wiki/Completely_Fair_Scheduler
+
 https://pubs.opengroup.org/onlinepubs/9699919799/
+
 https://linux.die.net
