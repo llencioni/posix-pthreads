@@ -17,6 +17,13 @@ $ ./<file-name.exe>
 - int get_nprocs_conf(void); // gets the number of processors configured in the OS
 - int get_nprocs(void);	     // gets the number of processors available 
 
+#include <semaphore.h>	
+#include <fcntl.h> // Semaphores O_* constants
+=============================================
+- sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
+- int sem_wait(sem_t *sem);
+- int sem_post(sem_t *sem);
+
 #include <pthread.h>
 ==========================
 - PTHREAD_SCOPE_PROCESS, PTHREAD_SCOPE_SYSTEM
