@@ -28,7 +28,14 @@ $ ./<file-name.exe>
 ==========================
 - PTHREAD_SCOPE_PROCESS, PTHREAD_SCOPE_SYSTEM
 - SCHED FIFO, SCHED OTHER, SCHED RR // scheduling policy thread_attr_t
-- int pthread_attr_getscope () // gets thread scope (PTHREAD_SCOPE_SYSTEM, PTHREAD_SCOPE_PROCESS)
+- pthread_attr_getscope () // gets thread scope (PTHREAD_SCOPE_SYSTEM, PTHREAD_SCOPE_PROCESS)
+- pthread attr init
+- pthread create
+- pthread attr setschedpolicy
+- pthread attr getschedpolicy
+- pthread attr setschedparam
+- pthread attr getschedparam
+- pthread attr getstacksize
 
 #include <sched.h>
 ========================
